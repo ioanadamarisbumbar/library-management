@@ -1,7 +1,6 @@
 package com.library.library_management.controller;
 
-import com.library.library_management.exception.AuthorNotFoundException;
-import com.library.library_management.model.Author;
+import com.library.library_management.dto.AuthorDto;
 import com.library.library_management.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,8 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * This class is a Spring MVC REST controller for managing authors in a database.
+ * It maps incoming HTTP requests to corresponding methods for CRUD operations on authors
+ * and delegates the logic to the injected AuthorService.
+ */
 @RestController
 @RequestMapping("/authors")
 public class AuthorController {
@@ -19,19 +22,13 @@ public class AuthorController {
     private AuthorService authorService;
 
     @PostMapping()
-    public ResponseEntity<Author> saveAuthor(@RequestBody Author author) {
+    public ResponseEntity<AuthorDto> saveAuthor(@RequestBody AuthorDto author) {
         return new ResponseEntity<>(authorService.addAuthor(author), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Author> updateAuthor(@RequestBody Author author,
-                                               @PathVariable("id") String authorId) {
-
-//        Author newAuthor = null;
-//        try {
-//            newAuthor =  authorService.updateAuthor(
-//                    authorId, author);
-//        return new ResponseEntity<>(newAuthor, HttpStatus.OK);
+    public ResponseEntity<AuthorDto> updateAuthor(@RequestBody AuthorDto author,
+                                                  @PathVariable("id") String authorId) {
         return new ResponseEntity<>(authorService.updateAuthor(
                 authorId, author), HttpStatus.OK);
     }
@@ -43,13 +40,12 @@ public class AuthorController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Author>> retrieveAuthors() {
+    public ResponseEntity<List<AuthorDto>> retrieveAuthors() {
         return new ResponseEntity<>(authorService.retrieveAuthors(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Author> retrieveAuthorById(@PathVariable("id") String authorId) {
-        Optional<Author> author = authorService.retrieveAuthor(authorId);
-        return new ResponseEntity<>(author.isPresent() ? author.get() : new Author(), HttpStatus.OK);
+    public ResponseEntity<AuthorDto> retrieveAuthorById(@PathVariable("id") String authorId) {
+        return new ResponseEntity<>(authorService.retrieveAuthor(authorId), HttpStatus.OK);
     }
 }

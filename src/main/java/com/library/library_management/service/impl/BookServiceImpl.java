@@ -3,17 +3,18 @@ package com.library.library_management.service.impl;
 import com.library.library_management.exception.BookNotFoundException;
 import com.library.library_management.model.Author;
 import com.library.library_management.model.Book;
-//import com.library.library_management.repository.BookRepository;
 import com.library.library_management.repository.BookRepository;
 import com.library.library_management.service.BookService;
+import com.library.library_management.dto.BookDto;
+import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -21,36 +22,39 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private BookRepository bookRepository;
 
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Autowired
     AuthorServiceImpl authorService;
 
     @Override
-    public Book addBook(Book book) {
-        return bookRepository.save(book);
-//        return new Book(11l, "ti", "de", "isbn", new Author(11l, "a", "b"));
+    public BookDto addBook(BookDto book) {
+        Book bookToBeAdded = modelMapper.map(book, Book.class);
+        return modelMapper.map(bookRepository.save(bookToBeAdded), BookDto.class);
     }
 
     @Override
-    public Book updateBook(String id, Book book) {
+    public BookDto updateBook(String id, BookDto book) {
         Optional<Book> optionalBook = bookRepository.findById(id);
 
         if (optionalBook.isEmpty()) {
             throw new BookNotFoundException("The book ID does not exist!");
         }
 
-        Book savedBook = optionalBook.get();
-        savedBook.setTitle(book.getTitle().isEmpty() ? savedBook.getTitle() : book.getTitle());
-        savedBook.setDescription(book.getDescription().isEmpty() ? savedBook.getDescription() : book.getDescription());
-        savedBook.setIsbn(book.getIsbn().isEmpty() ? savedBook.getIsbn() : book.getIsbn());
-        savedBook.setPublisher(book.getPublisher().isEmpty() ? savedBook.getPublisher() : book.getPublisher());
-        savedBook.setLanguage(book.getLanguage().isEmpty() ? savedBook.getLanguage() : book.getLanguage());
-        savedBook.setNumberOfPages(book.getNumberOfPages() > 0 ? savedBook.getNumberOfPages() : book.getNumberOfPages());
-        savedBook.setPrice(book.getPrice() > 0 ? savedBook.getPrice() : book.getPrice());
-        savedBook.setAuthor(ObjectUtils.isEmpty(book.getAuthor()) ? savedBook.getAuthor() : authorService.updateAuthor(savedBook.getAuthor().getId(), savedBook.getAuthor()));
+        Book existingBook = optionalBook.get();
+        existingBook.setTitle(book.getTitle().isEmpty() ? existingBook.getTitle() : book.getTitle());
+        existingBook.setDescription(book.getDescription().isEmpty() ? existingBook.getDescription() : book.getDescription());
+        existingBook.setIsbn(StringUtils.isEmpty(book.getIsbn()) ? existingBook.getIsbn() : book.getIsbn());
+        existingBook.setPublisher(StringUtils.isEmpty(book.getPublisher()) ? existingBook.getPublisher() : book.getPublisher());
+        existingBook.setPublicationDate(book.getPublicationDate() == null ? existingBook.getPublicationDate() : book.getPublicationDate());
+        existingBook.setLanguage(StringUtils.isEmpty(book.getLanguage()) ? existingBook.getLanguage() : book.getLanguage());
+        existingBook.setNumberOfPages(book.getNumberOfPages() > 0 ? existingBook.getNumberOfPages() : book.getNumberOfPages());
+        existingBook.setPrice(book.getPrice() > 0 ? existingBook.getPrice() : book.getPrice());
+        existingBook.setAuthor(ObjectUtils.isEmpty(book.getAuthor()) ? existingBook.getAuthor() : modelMapper.map(authorService.updateAuthor(existingBook.getAuthor().getId(), book.getAuthor()), Author.class));
 
-        return bookRepository.save(savedBook);
-
-//        return new Book(11l, "ti", "de", "isbn", new Author(11l, "a", "b"));
+        return modelMapper.map(bookRepository.save(existingBook), BookDto.class);
     }
 
     @Override
@@ -62,29 +66,21 @@ public class BookServiceImpl implements BookService {
         }
 
         bookRepository.deleteById(id);
-//        System.out.println("delete book");
     }
 
     @Override
-    public List<Book> retrieveBooks() {
-        return bookRepository.findAll();
-//        return new ArrayList<>(Arrays.asList(new Book(11l, "ti", "de", "isbn", new Author(11l, "a", "b")), new Book(177l, "title", "description", "isbn", new Author(15l, "ab", "ba"))));
+    public List<BookDto> retrieveBooks() {
+        List<Book> books = bookRepository.findAll();
+        return books.stream().map(book -> modelMapper.map(book, BookDto.class)).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Book> retrieveBook(String id) {
+    public BookDto retrieveBook(String id) {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isEmpty()) {
             throw new BookNotFoundException("The book ID does not exist!");
         }
-        return book;
-//        return Optional.of(new Book(11l, "ti", "de", "isbn", new Author(11l, "a", "b")));
+        return modelMapper.map(book.get(), BookDto.class);
     }
-
-//    @Override
-//    public Book retrieveBook(Long id) {
-//        Optional<Book> book = bookRepository.findById(id);
-//        return book.isPresent() ? book.get() : new Book();
-//    }
 }

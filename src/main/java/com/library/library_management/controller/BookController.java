@@ -1,8 +1,6 @@
 package com.library.library_management.controller;
 
-import com.library.library_management.model.Author;
-import com.library.library_management.model.Book;
-import com.library.library_management.service.AuthorService;
+import com.library.library_management.dto.BookDto;
 import com.library.library_management.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,8 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * This class is a Spring MVC REST controller for managing books in a database.
+ * It maps incoming HTTP requests to corresponding methods for CRUD operations on books
+ * and delegates the logic to the injected BookService.
+ */
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -20,13 +22,13 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping()
-    public ResponseEntity<Book> saveBook(@RequestBody Book book) {
+    public ResponseEntity<BookDto> saveBook(@RequestBody BookDto book) {
         return new ResponseEntity<>(bookService.addBook(book), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@RequestBody Book book,
-                                           @PathVariable("id") String bookId) {
+    public ResponseEntity<BookDto> updateBook(@RequestBody BookDto book,
+                                              @PathVariable("id") String bookId) {
         return new ResponseEntity<>(bookService.updateBook(
                 bookId, book), HttpStatus.OK);
     }
@@ -38,13 +40,12 @@ public class BookController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Book>> retrieveBooks() {
+    public ResponseEntity<List<BookDto>> retrieveBooks() {
         return new ResponseEntity<>(bookService.retrieveBooks(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> retrieveBookById(@PathVariable("id") String bookId) {
-        Optional<Book> book = bookService.retrieveBook(bookId);
-        return new ResponseEntity<>(book.isPresent() ? book.get() : new Book(), HttpStatus.OK);
+    public ResponseEntity<BookDto> retrieveBookById(@PathVariable("id") String bookId) {
+        return new ResponseEntity<>(bookService.retrieveBook(bookId), HttpStatus.OK);
     }
 }
