@@ -24,7 +24,7 @@
 
 ### MongoDB
 * Ensure you have an account on MongoDB Atlas Database
-* Connect to the cluster using the Shell option
+* Create and connect to the cluster using the Shell option
 * Download or install mongosh based on your operating system
 * In a terminal run the connection string provided in the installation guide
 
