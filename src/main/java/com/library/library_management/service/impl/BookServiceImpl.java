@@ -7,6 +7,8 @@ import com.library.library_management.repository.BookRepository;
 import com.library.library_management.service.BookService;
 import com.library.library_management.dto.BookDto;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;;
 @Service
 public class BookServiceImpl implements BookService {
 
+    private Logger log = LogManager.getLogger(this.getClass());
+
     @Autowired
     private BookRepository bookRepository;
 
@@ -27,11 +31,13 @@ public class BookServiceImpl implements BookService {
     private ModelMapper modelMapper;
 
     @Autowired
-    AuthorServiceImpl authorService;
+    private AuthorServiceImpl authorService;
 
     @Override
     public BookDto addBook(BookDto book) {
         Book bookToBeAdded = modelMapper.map(book, Book.class);
+
+        log.info("The book was added.");
         return modelMapper.map(bookRepository.save(bookToBeAdded), BookDto.class);
     }
 
@@ -40,6 +46,7 @@ public class BookServiceImpl implements BookService {
         Optional<Book> optionalBook = bookRepository.findById(id);
 
         if (optionalBook.isEmpty()) {
+            log.error("The book with the ID {} was not found.", id);
             throw new BookNotFoundException("The book ID does not exist!");
         }
 
@@ -54,6 +61,7 @@ public class BookServiceImpl implements BookService {
         existingBook.setPrice(book.getPrice() > 0 ? existingBook.getPrice() : book.getPrice());
         existingBook.setAuthor(ObjectUtils.isEmpty(book.getAuthor()) ? existingBook.getAuthor() : modelMapper.map(authorService.updateAuthor(existingBook.getAuthor().getId(), book.getAuthor()), Author.class));
 
+        log.info("The book with the ID {} was updated.", id);
         return modelMapper.map(bookRepository.save(existingBook), BookDto.class);
     }
 
@@ -62,15 +70,19 @@ public class BookServiceImpl implements BookService {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isEmpty()) {
+            log.error("The book with the ID {} was not found.", id);
             throw new BookNotFoundException("The book ID does not exist!");
         }
 
+        log.info("The book with the ID {} was deleted.", id);
         bookRepository.deleteById(id);
     }
 
     @Override
     public List<BookDto> retrieveBooks() {
         List<Book> books = bookRepository.findAll();
+
+        log.info("The list of books was retrieved.");
         return books.stream().map(book -> modelMapper.map(book, BookDto.class)).collect(Collectors.toList());
     }
 
@@ -79,8 +91,11 @@ public class BookServiceImpl implements BookService {
         Optional<Book> book = bookRepository.findById(id);
 
         if (book.isEmpty()) {
+            log.error("The book with the ID {} was not found.", id);
             throw new BookNotFoundException("The book ID does not exist!");
         }
+
+        log.info("The book with the ID {} was retrieved.", id);
         return modelMapper.map(book.get(), BookDto.class);
     }
 }

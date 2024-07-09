@@ -21,6 +21,12 @@ Project Structure
 * pom.xml: Defines project dependencies and build configuration.
 
 Running the Application
+* Ensure you have an account on MongoDB Atlas Database
+* Connect to the cluster using the Shell option
+* Download or install mongosh based on your operating system
+* In a terminal run the connection string provided in the installation guide
+
+
 * Ensure you have Java 17 and Maven installed.
 * Clone or download the project repository.
 * Open a terminal in the project directory.
