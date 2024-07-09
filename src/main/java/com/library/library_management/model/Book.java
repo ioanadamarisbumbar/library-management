@@ -9,9 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
-
-//@Entity
-//@Table(name = "books")
 @Document(collection = "books")
 @Setter
 @Getter
