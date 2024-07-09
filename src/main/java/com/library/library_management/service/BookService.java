@@ -21,11 +21,12 @@ public interface BookService {
     /**
      * Updates an existing book in the database.
      *
-     * @param id The ID of the book to be updated.
+     * @param id   The ID of the book to be updated.
      * @param book The BookDto object containing updated data for the book.
      * @return A BookDto object representing the updated book.
      */
     BookDto updateBook(String id, BookDto book);
+
     /**
      * Deletes a book from the database.
      *

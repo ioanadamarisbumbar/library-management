@@ -7,6 +7,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+/**
+ * This class represents a Data Transfer Object (DTO) for Author entities.
+ */
 @Setter
 @Getter
 @NoArgsConstructor

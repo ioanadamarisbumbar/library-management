@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
+/**
+ * This class represents an Author entity.
+ */
 @Document(collection = "authors")
 @Setter
 @Getter

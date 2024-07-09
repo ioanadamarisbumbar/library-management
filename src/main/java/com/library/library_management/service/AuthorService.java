@@ -21,7 +21,7 @@ public interface AuthorService {
     /**
      * Updates an existing author in the database.
      *
-     * @param id The ID of the author to be updated.
+     * @param id     The ID of the author to be updated.
      * @param author The AuthorDto object containing updated data for the author.
      * @return A new AuthorDto object representing the updated author.
      */

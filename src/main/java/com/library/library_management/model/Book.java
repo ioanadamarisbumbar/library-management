@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
+/**
+ * This class represents a Book entity.
+ */
 @Document(collection = "books")
 @Setter
 @Getter

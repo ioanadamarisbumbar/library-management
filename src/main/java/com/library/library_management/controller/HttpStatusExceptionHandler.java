@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * This class is a {@link ControllerAdvice} that handles specific exceptions thrown by the application
+ * and maps them to appropriate HTTP response codes.
+ */
 @ControllerAdvice
 public class HttpStatusExceptionHandler {
 
