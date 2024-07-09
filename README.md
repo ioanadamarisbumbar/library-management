@@ -39,6 +39,10 @@ _By default, the application will run on port 8082. You can access the API endpo
 * http://localhost:8082/authors for author management.
 * http://localhost:8082/books for book management.
 
+### OpenAPI
+* Access _http://localhost:8080/api-docs.yaml_ to download the .yaml file.
+* Go to _http://localhost:8080/swagger-ui/index.html_ to test the endpoints.
+
 ## API Endpoints
 
 ### Authors:
